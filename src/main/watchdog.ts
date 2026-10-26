@@ -5,7 +5,7 @@
 // (fichier témoin) la désactive : l'application redevient utilisable sans intervention.
 // Il ne surveille que les premières minutes, où ont lieu les premiers appels natifs.
 
-import { spawn } from 'node:child_process';
+import { spawn, type SpawnOptions } from 'node:child_process';
 import { log } from './logger';
 
 export interface WatchdogConfig {
@@ -63,6 +63,15 @@ export interface Watchdog {
   stop(): void;
 }
 
+/** Options de lancement du processus de surveillance (partagées avec les tests). */
+export const WATCHDOG_SPAWN_OPTIONS: SpawnOptions = {
+  stdio: ['ignore', 'ignore', 'ignore', 'ipc'],
+  windowsHide: true,
+  // Indispensable sous Windows : un enfant non détaché appartient au « job » du processus
+  // principal et serait tué en même temps que lui, avant d'avoir pu relancer l'application.
+  detached: true,
+};
+
 /**
  * Démarre la surveillance. `runtime` est l'exécutable capable d'exécuter du JavaScript
  * (Electron avec ELECTRON_RUN_AS_NODE=1, ou Node.js pour les tests).
@@ -73,12 +82,8 @@ export function startWatchdog(config: WatchdogConfig, runtime: string = process.
   let end: NodeJS.Timeout | null = null;
   try {
     const child = spawn(runtime, ['-e', WATCHDOG_SOURCE], {
+      ...WATCHDOG_SPAWN_OPTIONS,
       env: { ...process.env, ELECTRON_RUN_AS_NODE: '1', MBI_WATCHDOG: JSON.stringify(config) },
-      stdio: ['ignore', 'ignore', 'ignore', 'ipc'],
-      windowsHide: true,
-      // Indispensable sous Windows : un enfant non détaché appartient au « job » du processus
-      // principal et serait tué en même temps que lui, avant d'avoir pu relancer l'application.
-      detached: true,
     });
     const send = (m: string) => {
       try {

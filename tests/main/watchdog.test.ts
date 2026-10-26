@@ -3,7 +3,7 @@ import { spawn, type ChildProcess } from 'node:child_process';
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
-import { startWatchdog, WATCHDOG_SOURCE, type Watchdog } from '../../src/main/watchdog';
+import { startWatchdog, WATCHDOG_SOURCE, WATCHDOG_SPAWN_OPTIONS, type Watchdog } from '../../src/main/watchdog';
 
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 let proc: ChildProcess | null = null;
@@ -35,17 +35,26 @@ describe('chien de garde du démarrage', () => {
     const sourceFile = path.join(dir, 'watchdog.js');
     fs.writeFileSync(sourceFile, WATCHDOG_SOURCE);
     // Les chemins passent par l'environnement (et non dans le code) : les barres obliques
-    // inverses des chemins Windows ne doivent subir aucun échappement.
+    // inverses des chemins Windows ne doivent subir aucun échappement. Le processus de
+    // surveillance est lancé avec les mêmes options que dans l'application (dont « detached »,
+    // sans lequel Windows le tuerait en même temps que le processus figé).
     const parentScript = `
       const { spawn } = require('child_process');
       const env = process.env;
       const cfg = { pid: process.pid, exe: process.execPath, args: ['-e', "require('fs').writeFileSync(process.env.MBI_TEST_MARKER, 'relance')"], timeoutMs: 1500, lifetimeMs: 30000, logFile: env.MBI_TEST_LOG };
-      const child = spawn(process.execPath, [env.MBI_TEST_SOURCE], { env: { ...env, MBI_WATCHDOG: JSON.stringify(cfg) }, stdio: ['ignore', 'ignore', 'ignore', 'ipc'] });
+      const opts = JSON.parse(env.MBI_TEST_SPAWN_OPTIONS);
+      const child = spawn(process.execPath, [env.MBI_TEST_SOURCE], { ...opts, env: { ...env, MBI_WATCHDOG: JSON.stringify(cfg) } });
       const beat = setInterval(() => child.connected && child.send('ok'), 300);
       setTimeout(() => { clearInterval(beat); for (;;) {} }, 1000); // puis le processus se fige
     `;
     proc = spawn(process.execPath, ['-e', parentScript], {
-      env: { ...process.env, MBI_TEST_MARKER: marker, MBI_TEST_LOG: log, MBI_TEST_SOURCE: sourceFile },
+      env: {
+        ...process.env,
+        MBI_TEST_MARKER: marker,
+        MBI_TEST_LOG: log,
+        MBI_TEST_SOURCE: sourceFile,
+        MBI_TEST_SPAWN_OPTIONS: JSON.stringify(WATCHDOG_SPAWN_OPTIONS),
+      },
     });
     const exited = new Promise<boolean>((resolve) => proc!.once('exit', () => resolve(true)));
     for (let i = 0; i < 60 && !fs.existsSync(marker); i++) await sleep(200);
