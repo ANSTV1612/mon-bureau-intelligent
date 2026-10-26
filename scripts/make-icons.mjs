@@ -1,46 +1,51 @@
-// Génère les icônes de l'application à partir des SVG de build/ :
-//   build/icon.png (512 px), build/icon.ico (16 → 256 px), resources/icon.png, resources/icon.ico,
-//   resources/tray.ico et resources/tray.png (zone de notification).
-// Outils nécessaires (une seule fois, les fichiers générés sont versionnés) :
-//   - Playwright avec Chromium (rendu des SVG)  - ImageMagick (`convert`, assemblage .ico)
+// Génère les icônes et visuels de l'application à partir des logos de build/brand/ :
+//   build/icon.ico (16 → 256 px), build/icon.png (512 px), resources/icon.ico, resources/icon.png,
+//   resources/tray.ico et resources/tray.png (zone de notification),
+//   build/installerSidebar.bmp et build/uninstallerSidebar.bmp (installeur NSIS).
+// Outil nécessaire (une seule fois, les fichiers générés sont versionnés) : ImageMagick (`convert`).
 import { execFileSync } from 'node:child_process';
-import { copyFileSync, mkdirSync, mkdtempSync, readFileSync, rmSync } from 'node:fs';
-import { createRequire } from 'node:module';
+import { copyFileSync, mkdirSync, mkdtempSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 
-const require = createRequire(import.meta.url);
-const { chromium } = require('playwright');
-
-const root = path.resolve(path.dirname(new URL(import.meta.url).pathname), '..');
-const full = readFileSync(path.join(root, 'build/icon.svg'), 'utf8');
-const small = readFileSync(path.join(root, 'build/icon-small.svg'), 'utf8');
+const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
+const brand = (f) => path.join(root, 'build/brand', f);
 const tmp = mkdtempSync(path.join(tmpdir(), 'mbi-icons-'));
+const im = (...args) => execFileSync('convert', args);
 
-const browser = await chromium.launch();
-const page = await browser.newPage();
-async function render(svg, size, file) {
-  await page.setViewportSize({ width: size, height: size });
-  await page.setContent(
-    `<html><body style="margin:0;background:transparent">${svg.replace('<svg ', `<svg width="${size}" height="${size}" `)}</body></html>`,
-  );
-  await page.screenshot({ path: file, omitBackground: true, clip: { x: 0, y: 0, width: size, height: size } });
-  return file;
+// Logo « B » centré dans un carré transparent, avec une petite marge.
+const square = path.join(tmp, 'b-square.png');
+im(brand('bridgestone-b.png'), '-background', 'none', '-gravity', 'center', '-extent', '520x520', square);
+
+function sizes(list, prefix) {
+  return list.map((s) => {
+    const file = path.join(tmp, `${prefix}-${s}.png`);
+    im(square, '-resize', `${s}x${s}`, '-unsharp', '0x0.6', file);
+    return file;
+  });
 }
 
-const appSizes = [16, 20, 24, 32, 40, 48, 64, 96, 128, 256];
-const appPngs = [];
-for (const s of appSizes) appPngs.push(await render(s <= 32 ? small : full, s, path.join(tmp, `app-${s}.png`)));
-await render(full, 512, path.join(root, 'build/icon.png'));
-const trayPngs = [];
-for (const s of [16, 20, 24, 32, 40, 48]) trayPngs.push(await render(small, s, path.join(tmp, `tray-${s}.png`)));
-await render(small, 32, path.join(root, 'resources/tray.png'));
-await browser.close();
-
 mkdirSync(path.join(root, 'resources'), { recursive: true });
-execFileSync('convert', [...appPngs, path.join(root, 'build/icon.ico')]);
-execFileSync('convert', [...trayPngs, path.join(root, 'resources/tray.ico')]);
+im(...sizes([16, 20, 24, 32, 40, 48, 64, 96, 128, 256], 'app'), path.join(root, 'build/icon.ico'));
+im(square, '-resize', '512x512', path.join(root, 'build/icon.png'));
+im(...sizes([16, 20, 24, 32, 40, 48], 'tray'), path.join(root, 'resources/tray.ico'));
+im(square, '-resize', '32x32', path.join(root, 'resources/tray.png'));
 copyFileSync(path.join(root, 'build/icon.ico'), path.join(root, 'resources/icon.ico'));
 copyFileSync(path.join(root, 'build/icon.png'), path.join(root, 'resources/icon.png'));
+
+// Bandeau latéral de l'installeur (164 × 314, BMP 24 bits exigé par NSIS).
+const sidebar = path.join(root, 'build/installerSidebar.bmp');
+im(
+  '-size', '164x314', 'xc:white',
+  '(', brand('bridgestone-b.png'), '-resize', '92x', ')', '-gravity', 'north', '-geometry', '+0+46', '-composite',
+  '(', brand('bridgestone-wordmark.png'), '-resize', '136x', ')', '-gravity', 'north', '-geometry', '+0+152', '-composite',
+  '-font', 'DejaVu-Sans-Bold', '-pointsize', '12', '-fill', '#231815', '-gravity', 'north', '-annotate', '+0+190', 'Mon Bureau Intelligent',
+  '-font', 'DejaVu-Sans', '-pointsize', '10', '-fill', '#6b6b6b', '-annotate', '+0+208', 'Outil interne',
+  '-fill', '#e60012', '-draw', 'rectangle 0,306 164,314',
+  '-type', 'TrueColor', `BMP3:${sidebar}`,
+);
+copyFileSync(sidebar, path.join(root, 'build/uninstallerSidebar.bmp'));
+
 rmSync(tmp, { recursive: true, force: true });
-console.log('Icônes générées.');
+console.log('Icônes et visuels générés.');

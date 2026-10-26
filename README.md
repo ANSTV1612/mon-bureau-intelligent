@@ -1,4 +1,8 @@
-# Mon Bureau Intelligent
+# Mon Bureau Intelligent — Bridgestone
+
+<img src="build/brand/bridgestone-wordmark.png" alt="Bridgestone" height="28">
+
+**Outil interne** aux couleurs de Bridgestone (logo, rouge Bridgestone par défaut).
 
 **Gestionnaire de tâches pour Windows 10 et 11, avec vos tâches affichées en widgets directement sur le bureau.**
 
@@ -111,7 +115,7 @@ Vue d'ensemble (statistiques, aujourd'hui, priorités, à venir, progression), T
 
 ### Apparence
 
-Design moderne et minimaliste, coins arrondis, ombres discrètes, transparence réglable des widgets, **mode clair / sombre / automatique** (suit Windows), **8 couleurs d'accent + couleur personnalisée**, trois tailles de texte, animations légères (désactivables, et respect du réglage Windows « réduire les animations »), police Segoe UI Variable de Windows 11. Interface entièrement en français.
+Design moderne et minimaliste, coins arrondis, ombres discrètes, transparence réglable des widgets, **mode clair / sombre / automatique** (suit Windows), **rouge Bridgestone par défaut, 8 autres couleurs d'accent + couleur personnalisée**, logotype Bridgestone (adapté au thème clair ou sombre), trois tailles de texte, animations légères (désactivables, et respect du réglage Windows « réduire les animations »), police Segoe UI Variable de Windows 11. Interface entièrement en français.
 
 ---
 
@@ -121,12 +125,12 @@ Deux fichiers sont fournis (Windows 10 / 11, 64 bits) :
 
 | Fichier | Usage |
 | --- | --- |
-| `MonBureauIntelligent-Setup-1.0.0.exe` | **Installeur** (recommandé) : choix du dossier, raccourcis Menu Démarrer et Bureau, désinstallation propre depuis *Paramètres → Applications*. Ne demande pas les droits administrateur (installation pour l'utilisateur courant, ou pour tous si vous le choisissez). |
-| `MonBureauIntelligent-Portable-1.0.0.exe` | **Version portable** : se lance directement, sans installation (par exemple depuis une clé USB). |
+| `MonBureauIntelligent-Setup-1.1.0.exe` | **Installeur** (recommandé) : choix du dossier, raccourcis Menu Démarrer et Bureau, désinstallation propre depuis *Paramètres → Applications*. Ne demande pas les droits administrateur (installation pour l'utilisateur courant, ou pour tous si vous le choisissez). |
+| `MonBureauIntelligent-Portable-1.1.0.exe` | **Version portable** : se lance directement, sans installation (par exemple depuis une clé USB). |
 
-| Installeur (français) | Fin d'installation | Désinstallation |
+| Installeur (français) | Dossier d'installation | Désinstallation |
 | --- | --- | --- |
-| ![Options](docs/captures/installeur-options.png) | ![Fin](docs/captures/installeur-fin.png) | ![Données](docs/captures/desinstallation-donnees.png) |
+| ![Options](docs/captures/installeur-options.png) | ![Dossier](docs/captures/installeur-dossier.png) | ![Données](docs/captures/desinstallation-donnees.png) |
 
 > Captures réalisées sous Wine (d'où le style Windows classique des boutons).
 
@@ -238,8 +242,8 @@ npm run verify:release     # contrôle des .exe produits + sommes SHA-256
 Les fichiers sont produits dans `release/` :
 
 ```
-release/MonBureauIntelligent-Setup-1.0.0.exe      installeur NSIS
-release/MonBureauIntelligent-Portable-1.0.0.exe   version portable
+release/MonBureauIntelligent-Setup-1.1.0.exe      installeur NSIS
+release/MonBureauIntelligent-Portable-1.1.0.exe   version portable
 release/win-unpacked/MonBureauIntelligent.exe     application décompressée (test rapide)
 ```
 
@@ -255,11 +259,11 @@ release/win-unpacked/MonBureauIntelligent.exe     application décompressée (te
 | `npm run dist:win` | Installeur + portable |
 | `npm run dist:win:installer` / `dist:win:portable` | L'un ou l'autre seulement |
 | `npm run verify:release` | Vérifie les livrables |
-| `npm run icons` | Régénère les icônes depuis `build/icon.svg` (nécessite Playwright et ImageMagick ; les icônes sont déjà fournies) |
+| `npm run icons` | Régénère les icônes et le bandeau de l'installeur depuis les logos de `build/brand/` (nécessite ImageMagick ; les fichiers sont déjà fournis) |
 
 ### Compilation sur un Windows « propre » via GitHub Actions
 
-Le fichier `.github/workflows/build-windows.yml` compile, teste et vérifie le logiciel sur une machine Windows de GitHub à chaque envoi sur `main` (ou manuellement : onglet **Actions** → *Compilation Windows* → *Run workflow*). Les `.exe` sont téléchargeables dans l'artefact *MonBureauIntelligent-Windows* de l'exécution. Une étiquette `v*` (ex. `git tag v1.0.0 && git push origin v1.0.0`) publie en plus une version dans l'onglet **Releases**.
+Le fichier `.github/workflows/build-windows.yml` compile, teste et vérifie le logiciel sur une machine Windows de GitHub à chaque envoi sur `main` (ou manuellement : onglet **Actions** → *Compilation Windows* → *Run workflow*). Les `.exe` sont téléchargeables dans l'artefact *MonBureauIntelligent-Windows* de l'exécution. Une étiquette `v*` (ex. `git tag v1.1.0 && git push origin v1.1.0`, ou *Releases → Create a new release* sur GitHub) publie en plus une version dans l'onglet **Releases**.
 
 ### Signature de code (facultatif)
 

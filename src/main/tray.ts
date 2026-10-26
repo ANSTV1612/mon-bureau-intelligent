@@ -2,7 +2,7 @@
 
 import { Menu, nativeImage, Tray, type MenuItemConstructorOptions } from 'electron';
 import path from 'node:path';
-import { WIDGET_META, WIDGET_ORDER } from '../shared/defaults';
+import { COMPANY_NAME, WIDGET_META, WIDGET_ORDER } from '../shared/defaults';
 import type { Settings, WidgetState, WidgetType } from '../shared/types';
 import { getAppPaths } from './windows/common';
 
@@ -41,11 +41,12 @@ export class AppTray {
   }
 
   update(state: TrayState): void {
-    if (!this.tray) return;
+    // À la fermeture, Electron peut détruire l'icône avant notre propre arrêt.
+    if (!this.tray || this.tray.isDestroyed()) return;
     const shortcut = (acc: string) => acc.replace('CommandOrControl', 'Ctrl').replace(/\+/g, '+');
     const parts = [`${state.todayCount} tâche${state.todayCount > 1 ? 's' : ''} aujourd'hui`];
     if (state.overdueCount) parts.push(`${state.overdueCount} en retard`);
-    this.tray.setToolTip(`Mon Bureau Intelligent — ${parts.join(', ')}`);
+    this.tray.setToolTip(`Mon Bureau Intelligent · ${COMPANY_NAME} — ${parts.join(', ')}`);
 
     const widgetItems: MenuItemConstructorOptions[] = WIDGET_ORDER.map((type) => {
       const w = state.widgets.find((s) => s.type === type);
@@ -108,7 +109,7 @@ export class AppTray {
   }
 
   destroy(): void {
-    this.tray?.destroy();
+    if (this.tray && !this.tray.isDestroyed()) this.tray.destroy();
     this.tray = null;
   }
 }

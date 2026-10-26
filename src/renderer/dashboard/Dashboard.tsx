@@ -7,7 +7,8 @@ import type { AppSnapshot, Task } from '../../shared/types';
 import { todayKey } from '../../shared/dates';
 import { api } from '../lib/api';
 import { useNow } from '../lib/store';
-import { Icon, Logo } from '../components/Icon';
+import { Icon } from '../components/Icon';
+import { Wordmark } from '../components/Brand';
 import { Toasts } from '../components/ui';
 import { Overview } from './Overview';
 import { TasksPage } from './TasksPage';
@@ -92,8 +93,10 @@ export function Dashboard({ snapshot }: { snapshot: AppSnapshot }) {
     <div className="dash">
       <header className="titlebar drag">
         <div className="brand">
-          <Logo />
-          Mon Bureau Intelligent
+          <Wordmark height={15} />
+          <span className="brand-sep" aria-hidden="true" />
+          <span className="brand-app">Mon Bureau Intelligent</span>
+          <span className="brand-tag">Outil interne</span>
         </div>
         <div className="global-search">
           <Icon name="search" />

@@ -7,6 +7,7 @@ import type { AppSnapshot, Priority } from '../../shared/types';
 import { api } from '../lib/api';
 import { useNow } from '../lib/store';
 import { Icon } from '../components/Icon';
+import { BMark } from '../components/Brand';
 import { ParsePreview } from '../components/QuickAddInput';
 
 export function QuickAddView({ snapshot }: { snapshot: AppSnapshot }) {
@@ -75,7 +76,7 @@ export function QuickAddView({ snapshot }: { snapshot: AppSnapshot }) {
     >
       <div className="qa-card">
         <div className="qa-input-row">
-          <Icon name="plus" />
+          <BMark size={24} />
           <input
             ref={input}
             className="qa-input"

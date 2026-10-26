@@ -1,4 +1,6 @@
-# Bilan des tests — Mon Bureau Intelligent 1.0.0
+# Bilan des tests — Mon Bureau Intelligent
+
+Ce bilan porte sur la version 1.0.0. La **version 1.1.0** ajoute l'identité visuelle Bridgestone (outil interne : logo dans l'application, l'installeur et les icônes, rouge Bridgestone par défaut) et corrige une erreur à la fermeture (icône de la zone de notification déjà détruite par Electron). Pour la 1.1.0 : 75 tests unitaires réussis, 26/26 vérifications de bout en bout réussies sur deux exécutions consécutives, compilation et tests sous Windows par GitHub Actions.
 
 Ce document indique précisément ce qui a été testé, comment, et ce qui n'a **pas** pu l'être.
 

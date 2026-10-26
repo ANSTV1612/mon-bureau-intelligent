@@ -6,9 +6,9 @@
     'Helvetica Neue', Arial, sans-serif;
   --font-display: 'Segoe UI Variable Display', 'Segoe UI Variable', 'Segoe UI', system-ui, -apple-system, sans-serif;
 
-  --accent: #6366f1;
-  --accent-rgb: 99, 102, 241;
-  --accent-strong: #4f46e5;
+  --accent: #e60012;
+  --accent-rgb: 230, 0, 18;
+  --accent-strong: #b8000e;
   --accent-contrast: #ffffff;
   --accent-soft: rgba(var(--accent-rgb), 0.12);
   --accent-softer: rgba(var(--accent-rgb), 0.07);

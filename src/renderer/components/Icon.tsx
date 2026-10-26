@@ -73,24 +73,3 @@ export function Icon({ name, size, className, filled }: { name: string; size?: n
     </svg>
   );
 }
-
-/** Logo de l'application (aussi utilisé pour l'icône). */
-export function Logo({ size = 22 }: { size?: number }) {
-  return (
-    <svg className="brand-logo" width={size} height={size} viewBox="0 0 64 64" aria-hidden="true">
-      <defs>
-        <linearGradient id="mbi-g" x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0" stopColor="#7c7ff7" />
-          <stop offset="1" stopColor="#4f46e5" />
-        </linearGradient>
-      </defs>
-      <rect x="2" y="2" width="60" height="60" rx="16" fill="url(#mbi-g)" />
-      <rect x="12" y="13" width="18" height="17" rx="5" fill="#fff" opacity="0.95" />
-      <rect x="34" y="13" width="18" height="10" rx="4" fill="#fff" opacity="0.6" />
-      <rect x="12" y="34" width="18" height="17" rx="5" fill="#fff" opacity="0.6" />
-      <rect x="34" y="27" width="18" height="24" rx="5" fill="#fff" opacity="0.95" />
-      <path d="m16.5 21.5 3 3 6-6" fill="none" stroke="#4f46e5" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
-      <path d="m38.5 39.5 3 3 6-6" fill="none" stroke="#4f46e5" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
-  );
-}

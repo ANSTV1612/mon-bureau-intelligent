@@ -1,10 +1,12 @@
 import type { Priority, Settings, TaskStatus, WidgetType } from './types';
 
 export const APP_NAME = 'Mon Bureau Intelligent';
+/** Marque de l'entreprise (outil interne). */
+export const COMPANY_NAME = 'Bridgestone';
 
 export const DEFAULT_SETTINGS: Settings = {
   theme: 'system',
-  accentColor: '#6366f1',
+  accentColor: '#e60012',
   widgetOpacity: 0.86,
   fontScale: 'normal',
   animations: true,
@@ -179,6 +181,7 @@ export const PROJECT_COLORS = [
 ];
 
 export const ACCENT_PRESETS = [
+  { name: 'Rouge Bridgestone', value: '#e60012' },
   { name: 'Indigo', value: '#6366f1' },
   { name: 'Bleu', value: '#2563eb' },
   { name: 'Ciel', value: '#0ea5e9' },

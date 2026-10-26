@@ -8,6 +8,7 @@ import type { AppSnapshot, Settings, ShortcutSettings } from '../../shared/types
 import { api } from '../lib/api';
 import { Icon } from '../components/Icon';
 import { Segmented, Switch, reportResult, toast } from '../components/ui';
+import { Wordmark } from '../components/Brand';
 
 function Row({ title, text, children }: { title: string; text?: ReactNode; children: ReactNode }) {
   return (
@@ -366,6 +367,10 @@ export function SettingsPage({ snapshot }: { snapshot: AppSnapshot }) {
       </Section>
 
       <Section icon="info" title="À propos">
+        <div className="about-brand">
+          <Wordmark height={22} />
+          <span>Outil interne · Mon Bureau Intelligent</span>
+        </div>
         <Row
           title={`Mon Bureau Intelligent ${info.version}`}
           text={`${info.isPortable ? 'Version portable' : 'Version installée'} · ${info.platform === 'win32' ? 'Windows' : info.platform}`}
