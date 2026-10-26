@@ -1,0 +1,204 @@
+/* ==========================================================================
+   Saisie rapide (fenêtre flottante)
+   ========================================================================== */
+.qa-root {
+  position: fixed;
+  inset: 0;
+  padding: 14px 18px 30px;
+}
+.qa-card {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 14px 16px 12px;
+  border-radius: var(--radius-xl);
+  background: var(--surface);
+  border: 1px solid var(--border-strong);
+  box-shadow: var(--shadow-lg);
+  animation: pop-in 160ms var(--ease);
+}
+.qa-input-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.qa-input-row > svg {
+  width: 20px;
+  height: 20px;
+  color: var(--accent);
+  flex: none;
+}
+.qa-input {
+  flex: 1;
+  min-width: 0;
+  height: 40px;
+  border: none;
+  outline: none;
+  background: transparent;
+  font-size: 1.25em;
+  font-family: var(--font-display);
+}
+.qa-input::placeholder {
+  color: var(--text-3);
+}
+.qa-options {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+.qa-options .select,
+.qa-options .input {
+  width: auto;
+  height: 30px;
+  font-size: 0.92em;
+}
+.qa-footer {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding-top: 8px;
+  border-top: 1px solid var(--border);
+  font-size: 0.84em;
+  color: var(--text-3);
+}
+.qa-footer .spacer {
+  flex: 1;
+}
+.qa-success {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--success);
+  font-weight: 600;
+  animation: pop-in 160ms var(--ease);
+}
+.qa-success svg {
+  width: 16px;
+  height: 16px;
+}
+
+/* ==========================================================================
+   Fenêtre de rappels
+   ========================================================================== */
+.rp-root {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 8px;
+}
+.rp-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.rp-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 4px;
+}
+.rp-head .badge {
+  box-shadow: var(--shadow-sm);
+}
+.rp-head button {
+  margin-left: auto;
+  height: 24px;
+  padding: 0 10px;
+  border: none;
+  border-radius: 12px;
+  background: rgba(var(--surface-rgb), 0.92);
+  color: var(--text-2);
+  font-size: 0.86em;
+  font-weight: 600;
+  box-shadow: var(--shadow-sm);
+}
+.rp-card {
+  position: relative;
+  display: flex;
+  gap: 12px;
+  padding: 14px 14px 12px;
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+  border: 1px solid var(--border-strong);
+  box-shadow: var(--shadow-lg);
+  animation: slide-in-right 260ms var(--ease);
+  overflow: hidden;
+}
+.rp-card::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  background: var(--accent);
+}
+.rp-card[data-priority='high']::before {
+  background: var(--p-high);
+}
+.rp-card[data-priority='urgent']::before {
+  background: var(--p-urgent);
+}
+.rp-icon {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 11px;
+  background: var(--accent-soft);
+  color: var(--accent);
+  flex: none;
+}
+.rp-card[data-priority='urgent'] .rp-icon {
+  background: var(--danger-soft);
+  color: var(--danger);
+}
+.rp-icon svg {
+  width: 17px;
+  height: 17px;
+}
+.rp-main {
+  flex: 1;
+  min-width: 0;
+}
+.rp-label {
+  font-size: 0.78em;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--text-3);
+}
+.rp-title {
+  margin: 2px 0 2px;
+  font-weight: 650;
+  font-size: 1.05em;
+  word-break: break-word;
+}
+.rp-when {
+  font-size: 0.9em;
+  color: var(--text-2);
+}
+.rp-actions {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 6px;
+  margin-top: 10px;
+}
+.rp-actions .select {
+  width: 112px;
+  flex: none;
+  height: 26px;
+  padding-left: 8px;
+  font-size: 0.88em;
+}
+.rp-actions .btn {
+  flex: none;
+}
+.rp-close {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+}

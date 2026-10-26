@@ -1,0 +1,47 @@
+{
+  "name": "mon-bureau-intelligent",
+  "productName": "Mon Bureau Intelligent",
+  "version": "1.0.0",
+  "description": "Gestionnaire de tâches avec widgets sur le bureau Windows",
+  "author": "Mon Bureau Intelligent",
+  "license": "MIT",
+  "private": true,
+  "main": "dist/main/index.cjs",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ANSTV1612/mon-bureau-intelligent.git"
+  },
+  "scripts": {
+    "dev": "node scripts/dev.mjs",
+    "typecheck": "tsc --noEmit -p tsconfig.json",
+    "build:renderer": "vite build",
+    "build:main": "node scripts/build-main.mjs",
+    "build": "npm run typecheck && npm run build:renderer && npm run build:main",
+    "start": "electron .",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:e2e": "npm run build && node tests/e2e/run-e2e.mjs",
+    "icons": "node scripts/make-icons.mjs",
+    "dist:win": "npm run build && electron-builder --win --x64 --publish never",
+    "dist:win:installer": "npm run build && electron-builder --win nsis --x64 --publish never",
+    "dist:win:portable": "npm run build && electron-builder --win portable --x64 --publish never",
+    "verify:release": "node scripts/verify-release.mjs"
+  },
+  "dependencies": {
+    "koffi": "2.16.3"
+  },
+  "devDependencies": {
+    "@types/node": "24.19.2",
+    "@types/react": "19.3.0",
+    "@types/react-dom": "19.3.0",
+    "@vitejs/plugin-react": "6.1.2",
+    "electron": "44.9.3",
+    "electron-builder": "26.18.0",
+    "esbuild": "0.28.2",
+    "react": "19.3.1",
+    "react-dom": "19.3.1",
+    "typescript": "6.0.3",
+    "vite": "8.3.5",
+    "vitest": "5.0.5"
+  }
+}

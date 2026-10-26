@@ -1,0 +1,68 @@
+# Configuration du packaging Windows (electron-builder).
+# Produit : un installeur NSIS (.exe) et une version portable (.exe), 64 bits.
+appId: fr.monbureau.intelligent
+productName: Mon Bureau Intelligent
+copyright: Copyright © 2026 Mon Bureau Intelligent
+directories:
+  output: release
+  buildResources: build
+
+files:
+  - dist/**/*
+  - package.json
+  - "!**/*.map"
+  # Koffi : seul le binaire Windows x64 est utile ; on retire sources, documentation et autres plateformes.
+  - "!node_modules/koffi/{src,vendor,lib,doc}/**"
+  - "!node_modules/koffi/*.md"
+  - "!node_modules/koffi/build/koffi/{darwin_*,freebsd_*,linux_*,musl_*,openbsd_*,win32_arm64,win32_ia32}/**"
+  - "!node_modules/koffi/build/koffi/**/*.{lib,exp,pdb}"
+
+# Icônes (application, zone de notification) copiées hors de l'archive asar :
+# les notifications Windows exigent un vrai fichier.
+extraResources:
+  - from: resources
+    to: assets
+
+asar: true
+asarUnpack:
+  - node_modules/koffi/build/koffi/win32_x64/**
+
+win:
+  target:
+    - target: nsis
+      arch: [x64]
+    - target: portable
+      arch: [x64]
+  icon: build/icon.ico
+  executableName: MonBureauIntelligent
+  requestedExecutionLevel: asInvoker
+  legalTrademarks: Mon Bureau Intelligent
+
+nsis:
+  oneClick: false
+  perMachine: false
+  allowElevation: true
+  allowToChangeInstallationDirectory: true
+  createDesktopShortcut: true
+  createStartMenuShortcut: true
+  shortcutName: Mon Bureau Intelligent
+  uninstallDisplayName: Mon Bureau Intelligent
+  installerIcon: build/icon.ico
+  uninstallerIcon: build/icon.ico
+  installerHeaderIcon: build/icon.ico
+  installerSidebar: build/installerSidebar.bmp
+  uninstallerSidebar: build/uninstallerSidebar.bmp
+  # Installeur en français uniquement (electron-builder n'applique une langue autre que l'anglais
+  # qu'en mode « multilingue » ; seule la langue française est incluse).
+  multiLanguageInstaller: true
+  installerLanguages: [fr_FR]
+  displayLanguageSelector: false
+  runAfterFinish: true
+  deleteAppDataOnUninstall: false
+  include: build/installer.nsh
+  artifactName: MonBureauIntelligent-Setup-${version}.exe
+
+portable:
+  artifactName: MonBureauIntelligent-Portable-${version}.exe
+
+publish: null
