@@ -34,14 +34,19 @@ describe('chien de garde du démarrage', () => {
     const log = path.join(dir, 'chien.log');
     const sourceFile = path.join(dir, 'watchdog.js');
     fs.writeFileSync(sourceFile, WATCHDOG_SOURCE);
+    // Les chemins passent par l'environnement (et non dans le code) : les barres obliques
+    // inverses des chemins Windows ne doivent subir aucun échappement.
     const parentScript = `
       const { spawn } = require('child_process');
-      const cfg = { pid: process.pid, exe: process.execPath, args: ['-e', "require('fs').writeFileSync(${JSON.stringify(marker).replace(/"/g, '\\"')}, 'relance')"], timeoutMs: 1500, lifetimeMs: 30000, logFile: ${JSON.stringify(log)} };
-      const child = spawn(process.execPath, [${JSON.stringify(sourceFile)}], { env: { ...process.env, MBI_WATCHDOG: JSON.stringify(cfg) }, stdio: ['ignore', 'ignore', 'ignore', 'ipc'] });
+      const env = process.env;
+      const cfg = { pid: process.pid, exe: process.execPath, args: ['-e', "require('fs').writeFileSync(process.env.MBI_TEST_MARKER, 'relance')"], timeoutMs: 1500, lifetimeMs: 30000, logFile: env.MBI_TEST_LOG };
+      const child = spawn(process.execPath, [env.MBI_TEST_SOURCE], { env: { ...env, MBI_WATCHDOG: JSON.stringify(cfg) }, stdio: ['ignore', 'ignore', 'ignore', 'ipc'] });
       const beat = setInterval(() => child.connected && child.send('ok'), 300);
       setTimeout(() => { clearInterval(beat); for (;;) {} }, 1000); // puis le processus se fige
     `;
-    proc = spawn(process.execPath, ['-e', parentScript]);
+    proc = spawn(process.execPath, ['-e', parentScript], {
+      env: { ...process.env, MBI_TEST_MARKER: marker, MBI_TEST_LOG: log, MBI_TEST_SOURCE: sourceFile },
+    });
     const exited = new Promise<boolean>((resolve) => proc!.once('exit', () => resolve(true)));
     for (let i = 0; i < 60 && !fs.existsSync(marker); i++) await sleep(200);
     expect(await Promise.race([exited, sleep(2000).then(() => false)])).toBe(true);
